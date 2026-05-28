@@ -1,0 +1,5 @@
+bucket  = "replace-with-bootstrap-output"
+key     = "dev/core/terraform.tfstate"
+region  = "ap-southeast-2"
+dynamodb_table = "replace-with-bootstrap-output"
+encrypt = true

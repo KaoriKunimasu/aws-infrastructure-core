@@ -1,0 +1,29 @@
+output "environment_name" {
+  description = "The name of the environment."
+  value       = local.environment
+}
+
+output "aws_account_id" {
+  description = "The AWS account ID where the infrastructure is deployed."
+  value       = data.aws_caller_identity.current.account_id
+}
+
+output "vpc_id" {
+  description = "The ID of the VPC created for the dev environment."
+  value       = module.vpc.vpc_id
+}
+
+output "public_subnet_ids" {
+  description = "The IDs of the public subnets created for the dev environment."
+  value       = module.vpc.public_subnet_ids
+}
+
+output "private_subnet_ids" {
+  description = "The IDs of the private subnets by availability zone."
+  value       = module.vpc.private_subnet_ids
+}
+
+output "flow_logs_log_group_name" {
+  description = "The name of the CloudWatch Logs log group for VPC flow logs."
+  value       = module.vpc.flow_logs_log_group_name
+}
