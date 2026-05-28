@@ -1,9 +1,0 @@
-aws_region          = "ap-southeast-2"
-bucket_prefix       = "aws-infrastructure-core-tfstate"
-dynamodb_table_name = "aws-infrastructure-core-tf-locks"
-
-force_destroy = false
-
-tags = {
-  Owner = "kaori-kunimasu"
-}
