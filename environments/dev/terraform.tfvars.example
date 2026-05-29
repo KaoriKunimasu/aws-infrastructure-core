@@ -28,3 +28,4 @@ instance_type   = "t3.micro"
 instance_volume_size    = 8
 
 notification_email = "kaori.kunimasu@gmail.com"
+monthly_budget_limit = "25"

@@ -72,3 +72,9 @@ variable "notification_email" {
   type        = string
   default     = ""
 }
+
+variable "monthly_budget_limit" {
+  description = "Monthly budget limit in USD for the dev environment. Set to 0 to disable budget alerts."
+  type        = number
+  default     = 10
+}
