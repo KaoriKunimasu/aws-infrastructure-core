@@ -54,3 +54,15 @@ variable "single_nat_gateway" {
   type        = bool
   default     = true
 }
+
+variable "instance_type" {
+  description = "EC2 instance type used for dev environment."
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "instance_volume_size" {
+  description = "Size of the root EBS volume for EC2 instances in GB."
+  type        = number
+  default     = 8
+}
