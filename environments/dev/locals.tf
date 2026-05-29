@@ -10,4 +10,6 @@ locals {
     Environment = local.environment
     Repository  = "aws-infrastructure-core"
   }
+
+  notifications_enabled = trimspace(var.notification_email) != ""
 }
