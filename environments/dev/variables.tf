@@ -66,3 +66,9 @@ variable "instance_volume_size" {
   type        = number
   default     = 8
 }
+
+variable "notification_email" {
+  description = "Email address to receive notifications. Leave empty to disable email notifications."
+  type        = string
+  default     = ""
+}

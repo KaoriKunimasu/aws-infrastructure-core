@@ -47,3 +47,12 @@ output "ssm_start_session_command" {
   description = "The AWS CLI command to start an SSM session to the dev validation instance."
   value       = "aws ssm start-session --target ${aws_instance.dev_validation.id}"
 }
+
+output "alarm_topic_arn" {
+  description = "The ARN of the SNS topic for CloudWatch alarms, if notifications are enabled."
+  value       = local.notifications_enabled ? aws_sns_topic.alerts[0].arn : null
+}
+output "cpu_alarm_name" {
+  description = "CloudWatch alarm namefor high CPU utilization on the dev instance."
+  value       = aws_cloudwatch_metric_alarm.dev_instance_cpu_high.alarm_name
+}
