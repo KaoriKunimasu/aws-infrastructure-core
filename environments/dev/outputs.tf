@@ -27,3 +27,23 @@ output "flow_logs_log_group_name" {
   description = "The name of the CloudWatch Logs log group for VPC flow logs."
   value       = module.vpc.flow_logs_log_group_name
 }
+
+output "dev_instance_id" {
+  description = "The ID of the EC2 instance created for validation in the dev environment."
+  value       = aws_instance.dev_validation.id
+}
+
+output "dev_instance_public_ip" {
+  description = "The public IP address of the EC2 instance created for validation in the dev environment."
+  value       = aws_instance.dev_validation.public_ip
+}
+
+output "dev_instance_private_ip" {
+  description = "The private IP address of the EC2 instance created for validation in the dev environment."
+  value       = aws_instance.dev_validation.private_ip
+}
+
+output "ssm_start_session_command" {
+  description = "The AWS CLI command to start an SSM session to the dev validation instance."
+  value       = "aws ssm start-session --target ${aws_instance.dev_validation.id}"
+}
