@@ -56,3 +56,8 @@ output "cpu_alarm_name" {
   description = "CloudWatch alarm namefor high CPU utilization on the dev instance."
   value       = aws_cloudwatch_metric_alarm.dev_instance_cpu_high.alarm_name
 }
+
+output "monthly_budget_name" {
+  description = "The name of the monthly budget created for the dev environment."
+  value       = local.notifications_enabled ? aws_budgets_budget.dev_monthly[0].name : null
+}
