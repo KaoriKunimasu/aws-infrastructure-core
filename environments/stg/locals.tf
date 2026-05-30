@@ -3,9 +3,11 @@ locals {
 
   common_tags = {
     Project     = var.project_name
+    Environment = var.environment
     ManagedBy   = "terraform"
     CostCenter  = var.cost_center
-    Environment = var.environment
     Owner       = var.owner
   }
+
+  notifications_enabled = trimspace(var.notification_email) != ""
 }

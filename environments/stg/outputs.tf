@@ -41,3 +41,18 @@ output "validation_instance_role_name" {
   description = "The name of the IAM role attached to the staging validation instance."
   value       = try(aws_iam_role.validation_instance[0].name, null)
 }
+
+output "alerts_topic_arn" {
+  description = "SNS topic ARN used for staging alerts."
+  value       = aws_sns_topic.alerts.arn
+}
+
+output "validation_cpu_alarm_name" {
+  description = "CloudWatch alarm name for the staging validation instance CPU alarm."
+  value       = try(aws_cloudwatch_metric_alarm.validation_cpu_high[0].alarm_name, null)
+}
+
+output "monthly_budget_arn" {
+  description = "ARN of the staging monthly budget."
+  value       = aws_budgets_budget.monthly.arn
+}
