@@ -72,7 +72,6 @@ jobs:
           key            = "environments/${{ matrix.environment }}/terraform.tfstate"
           region         = "${AWS_REGION}"
           dynamodb_table = "${TERRAFORM_LOCK_TABLE}"
-          use_lockfile   = true
           encrypt        = true
           EOF
 
