@@ -108,3 +108,51 @@ variable "operations_private_subnet_index" {
   type        = number
   default     = 0
 }
+
+variable "notification_email" {
+  description = "Optional email address subscribed to the production alerts SNS topic."
+  type        = string
+  default     = ""
+}
+
+variable "cpu_alarm_threshold" {
+  description = "CPU utilization threshold for the production operations instance alarm."
+  type        = number
+  default     = 60
+}
+
+variable "cpu_alarm_period_seconds" {
+  description = "Period in seconds for the production operations instance CPU alarm."
+  type        = number
+  default     = 300
+}
+
+variable "cpu_alarm_evaluation_periods" {
+  description = "Number of evaluation periods for the production operations instance CPU alarm."
+  type        = number
+  default     = 2
+}
+
+variable "monthly_budget_limit" {
+  description = "Monthly budget limit for the production environment."
+  type        = number
+  default     = 150
+}
+
+variable "budget_limit_unit" {
+  description = "Budget limit unit."
+  type        = string
+  default     = "USD"
+}
+
+variable "budget_actual_threshold" {
+  description = "Actual spend percentage threshold for budget notifications."
+  type        = number
+  default     = 80
+}
+
+variable "budget_forecast_threshold" {
+  description = "Forecasted spend percentage threshold for budget notifications."
+  type        = number
+  default     = 100
+}
