@@ -76,7 +76,7 @@ variable "enable_nat_gateway" {
 variable "single_nat_gateway" {
   description = "Use a single NAT gateway for the production environment."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "flow_logs_retention_in_days" {

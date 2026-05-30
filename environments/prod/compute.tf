@@ -66,7 +66,7 @@ resource "aws_instance" "operations" {
 
   ami                         = data.aws_ssm_parameter.al2023_ami.value
   instance_type               = var.operations_instance_type
-  subnet_id                   = module.vpc.private_subnet_ids[var.operations_private_subnet_index]
+  subnet_id                   = module.vpc.private_subnet_ids[var.availability_zones[var.operations_private_subnet_index]]
   vpc_security_group_ids      = [aws_security_group.operations_instance[0].id]
   iam_instance_profile        = aws_iam_instance_profile.operations_instance[0].name
   associate_public_ip_address = false
