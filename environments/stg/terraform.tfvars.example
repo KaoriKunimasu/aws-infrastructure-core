@@ -1,0 +1,16 @@
+aws_region = "ap-southeast-2"
+allowed_account_ids = ["515241425905"]
+
+project_name = "core-infrastructure"
+environment = "stg"
+cost_center = "platform-engineering"
+owner = "platform-team"
+
+vpc_cidr    = "10.20.0.0/16"
+availability_zones = ["ap-southeast-2a", "ap-southeast-2b"]
+public_subnet_cidrs  = ["10.20.0.0/24", "10.20.1.0/24"]
+private_subnet_cidrs = ["10.20.10.0/24", "10.20.11.0/24"]
+
+enable_nat_gateway = true
+single_nat_gateway          = true
+flow_logs_retention_in_days = 30
