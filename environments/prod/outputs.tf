@@ -22,3 +22,24 @@ output "flow_log_group_name" {
   description = "CloudWatch log group name for VPC Flow Logs."
   value       = module.vpc.flow_logs_log_group_name
 }
+
+output "operations_instance_id" {
+  description = "ID of the production operations instance."
+  value       = try(aws_instance.operations[0].id, null)
+}
+
+output "operations_instance_private_ip" {
+  description = "Private IP address of the production operations instance."
+  value       = try(aws_instance.operations[0].private_ip, null)
+}
+
+output "operations_security_group_id" {
+  description = "Security group ID attached to the production operations instance."
+  value       = try(aws_security_group.operations_instance[0].id, null)
+}
+
+output "operations_instance_role_name" {
+  description = "IAM role name used by the production operations instance."
+  value       = try(aws_iam_role.operations_instance[0].name, null)
+}
+    

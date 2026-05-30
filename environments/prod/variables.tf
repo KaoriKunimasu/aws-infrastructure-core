@@ -84,3 +84,27 @@ variable "flow_logs_retention_in_days" {
   type        = number
   default     = 90
 }
+
+variable "create_operations_instance" {
+  description = "Whether to create the production operations instance."
+  type        = bool
+  default     = false
+}
+
+variable "operations_instance_type" {
+  description = "EC2 instance type for the production operations instance."
+  type        = string
+  default     = "t3.small"
+}
+
+variable "operations_root_volume_size" {
+  description = "Root volume size in GiB for the production operations instance."
+  type        = number
+  default     = 20
+}
+
+variable "operations_private_subnet_index" {
+  description = "Private subnet index used for the production operations instance."
+  type        = number
+  default     = 0
+}

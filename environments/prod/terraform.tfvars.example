@@ -29,3 +29,8 @@ private_subnet_cidrs = [
 enable_nat_gateway = true
 single_nat_gateway = false
 flow_logs_retention_in_days = 90
+
+create_operations_instance   = true
+operations_instance_type     = "t3.small"
+operations_root_volume_size  = 20
+operations_private_subnet_index = 0
