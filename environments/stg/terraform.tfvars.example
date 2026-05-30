@@ -14,3 +14,8 @@ private_subnet_cidrs = ["10.20.10.0/24", "10.20.11.0/24"]
 enable_nat_gateway = true
 single_nat_gateway          = true
 flow_logs_retention_in_days = 30
+
+create_validation_instance    = true
+validation_instance_type      = "t3.micro"
+validation_root_volume_size   = 16
+validation_private_subnet_index = 0

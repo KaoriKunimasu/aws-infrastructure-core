@@ -82,3 +82,26 @@ variable "flow_logs_retention_in_days" {
   type        = number
   default     = 30
 }
+
+variable "create_validation_instances" {
+  description = "Whether to create EC2 instances for validating the staging environment."
+  type        = bool
+  default     = true
+}
+variable "validation_instance_type" {
+  description = "EC2 instance type used for validation instances in the staging environment."
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "validation_root_volume_size" {
+  description = "Size of the root EBS volume for validation EC2 instances in GB."
+  type        = number
+  default     = 16
+}
+
+variable "validation_private_subnet_index" {
+  description = "Index of the private subnet to launch validation instances in."
+  type        = number
+  default     = 0
+}
