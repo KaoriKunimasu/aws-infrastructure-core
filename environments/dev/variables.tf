@@ -21,7 +21,7 @@ variable "availability_zones" {
   type        = list(string)
   default = [
     "ap-southeast-2a",
-    "ap-southeast-2bb"
+    "ap-southeast-2b"
   ]
 }
 
@@ -30,7 +30,7 @@ variable "public_subnet_cidrs" {
   type        = list(string)
   default = [
     "10.10.0.0/24",
-    "10.10.1.1/24"
+    "10.10.1.0/24"
   ]
 }
 
