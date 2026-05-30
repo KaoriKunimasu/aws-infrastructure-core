@@ -37,7 +37,7 @@ variable "owner" {
 variable "vpc_cidr" {
   description = "CIDR block assigned to the staging VPC"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "10.20.0.0/16"
 }
 variable "availability_zones" {
   description = "Availability zones used in the staging environment."

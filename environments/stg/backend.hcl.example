@@ -1,6 +1,5 @@
-bucket  = ""
+bucket  = "replace-with-terraform-state-bucket-name"
 key     = "environments/stg/terraform.tfstate"
 region  = "ap-southeast-2"
-dynamodb_table  = ""
-use_lockfile    = true
+dynamodb_table  = "replace-with-terraform-locks-table-name"
 encrypt = true
