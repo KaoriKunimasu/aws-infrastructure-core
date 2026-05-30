@@ -34,3 +34,13 @@ create_operations_instance   = true
 operations_instance_type     = "t3.small"
 operations_root_volume_size  = 20
 operations_private_subnet_index = 0
+
+notification_email           = "replace-me@example.com"
+cpu_alarm_threshold          = 60
+cpu_alarm_period_seconds     = 300
+cpu_alarm_evaluation_periods = 2
+
+monthly_budget_limit      = 150
+budget_limit_unit         = "USD"
+budget_actual_threshold   = 80
+budget_forecast_threshold = 100

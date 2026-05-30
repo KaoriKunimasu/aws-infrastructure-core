@@ -42,4 +42,18 @@ output "operations_instance_role_name" {
   description = "IAM role name used by the production operations instance."
   value       = try(aws_iam_role.operations_instance[0].name, null)
 }
-    
+
+output "alerts_topic_arn" {
+  description = "SNS topic ARN used for production alerts."
+  value       = aws_sns_topic.alerts.arn
+}
+
+output "operations_cpu_alarm_name" {
+  description = "CloudWatch alarm name for the production operations instance CPU alarm."
+  value       = try(aws_cloudwatch_metric_alarm.operations_cpu_high[0].alarm_name, null)
+}
+
+output "monthly_budget_arn" {
+  description = "ARN of the production monthly budget."
+  value       = aws_budgets_budget.monthly.arn
+}

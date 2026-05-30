@@ -8,4 +8,6 @@ locals {
     CostCenter  = var.cost_center
     Owner       = var.owner
   }
+
+  notifications_enabled = trimspace(var.notification_email) != ""
 }
