@@ -1,0 +1,186 @@
+name: terraform-plan
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**/*.tf"
+      - "**/*.tfvars"
+      - "**/*.tfvars.example"
+      - "**/backend.hcl.example"
+      - ".github/workflows/terraform-plan.yml"
+      - "docs/ci/github-actions-oidc.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: terraform-plan-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    if: ${{ vars.TERRAFORM_AWS_ROLE_ARN != '' && vars.TERRAFORM_STATE_BUCKET != '' && vars.TERRAFORM_LOCK_TABLE != '' && vars.TERRAFORM_ALLOWED_ACCOUNT_ID != '' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          - dev
+          - stg
+          - prod
+
+    defaults:
+      run:
+        working-directory: environments/${{ matrix.environment }}
+
+    env:
+      AWS_REGION: ap-southeast-2
+      TF_INPUT: "false"
+      TF_VAR_allowed_account_ids: '["${{ vars.TERRAFORM_ALLOWED_ACCOUNT_ID }}"]'
+      TERRAFORM_AWS_ROLE_ARN: ${{ vars.TERRAFORM_AWS_ROLE_ARN }}
+      TERRAFORM_STATE_BUCKET: ${{ vars.TERRAFORM_STATE_BUCKET }}
+      TERRAFORM_LOCK_TABLE: ${{ vars.TERRAFORM_LOCK_TABLE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.6.6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.TERRAFORM_AWS_ROLE_ARN }}
+          role-session-name: terraform-plan-${{ matrix.environment }}-${{ github.run_id }}
+          allowed-account-ids: ${{ vars.TERRAFORM_ALLOWED_ACCOUNT_ID }}
+          mask-aws-account-id: true
+
+      - name: Write backend configuration
+        run: |
+          cat > backend.hcl <<EOF
+          bucket         = "${TERRAFORM_STATE_BUCKET}"
+          key            = "environments/${{ matrix.environment }}/terraform.tfstate"
+          region         = "${AWS_REGION}"
+          dynamodb_table = "${TERRAFORM_LOCK_TABLE}"
+          use_lockfile   = true
+          encrypt        = true
+          EOF
+
+      - name: Terraform init
+        run: terraform init -backend-config=backend.hcl -reconfigure -input=false
+
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -no-color -input=false -lock-timeout=5m -detailed-exitcode
+        continue-on-error: true
+
+      - name: Publish plan summary
+        run: |
+          {
+            echo "## Terraform plan: ${{ matrix.environment }}"
+            echo
+            if [ "${{ steps.plan.outputs.exitcode }}" = "0" ]; then
+              echo "- Result: no changes"
+            elif [ "${{ steps.plan.outputs.exitcode }}" = "2" ]; then
+              echo "- Result: changes detected"
+            else
+              echo "- Result: failed"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment plan on pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          PLAN_OUTPUT: ${{ steps.plan.outputs.stdout }}
+          PLAN_EXITCODE: ${{ steps.plan.outputs.exitcode }}
+          TARGET_ENVIRONMENT: ${{ matrix.environment }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = `<!-- terraform-plan:${process.env.TARGET_ENVIRONMENT} -->`
+
+            const exitCode = process.env.PLAN_EXITCODE || "1"
+            const status =
+              exitCode === "0"
+                ? "no changes"
+                : exitCode === "2"
+                ? "changes detected"
+                : "failed"
+
+            const rawPlan = process.env.PLAN_OUTPUT || "No Terraform plan output was captured."
+            const maxLength = 60000
+            const planBody =
+              rawPlan.length > maxLength
+                ? `${rawPlan.slice(0, maxLength)}\n\n...truncated...`
+                : rawPlan
+
+            const body = `${marker}
+            #### Terraform plan (${process.env.TARGET_ENVIRONMENT}): \`${status}\`
+
+            <details><summary>Show plan</summary>
+
+            \`\`\`terraform
+            ${planBody}
+            \`\`\`
+
+            </details>
+
+            *Workflow: \`${context.workflow}\`, Actor: @${context.actor}*`
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            })
+
+            const existing = comments.find((comment) =>
+              comment.user.type === "Bot" && comment.body.includes(marker)
+            )
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body
+              })
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              })
+            }
+
+      - name: Fail if plan returned an error
+        if: steps.plan.outputs.exitcode == 1
+        run: exit 1
+
+  configuration_notice:
+    if: ${{ vars.TERRAFORM_AWS_ROLE_ARN == '' || vars.TERRAFORM_STATE_BUCKET == '' || vars.TERRAFORM_LOCK_TABLE == '' || vars.TERRAFORM_ALLOWED_ACCOUNT_ID == '' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Explain missing repository variables
+        run: |
+          {
+            echo "## Terraform plan workflow not configured"
+            echo
+            echo "Set the following repository variables before using this workflow:"
+            echo "- TERRAFORM_AWS_ROLE_ARN"
+            echo "- TERRAFORM_STATE_BUCKET"
+            echo "- TERRAFORM_LOCK_TABLE"
+            echo "- TERRAFORM_ALLOWED_ACCOUNT_ID"
+          } >> "$GITHUB_STEP_SUMMARY"
