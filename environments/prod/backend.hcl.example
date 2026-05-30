@@ -1,0 +1,6 @@
+bucket         = ""
+key            = "environments/prod/terraform.tfstate"
+region         = "ap-southeast-2"
+dynamodb_table = ""
+use_lockfile   = true
+encrypt        = true
