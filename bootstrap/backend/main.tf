@@ -2,9 +2,48 @@ resource "random_id" "bucket_suffix" {
   byte_length = 3
 }
 
+data "aws_iam_policy_document" "tfstate_kms" {
+  statement {
+    sid    = "EnableRootAccountAdmin"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+}
+
+resource "aws_kms_key" "tfstate" {
+  description             = "KMS key for Terraform state bucket encryption"
+  deletion_window_in_days = var.kms_key_deletion_window_in_days
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.tfstate_kms.json
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.state_bucket_name}-key"
+      Type = "terraform-state-kms"
+    }
+  )
+}
+
+resource "aws_kms_alias" "tfstate" {
+  name          = "alias/${var.bucket_prefix}-tfstate"
+  target_key_id = aws_kms_key.tfstate.key_id
+}
+
 resource "aws_s3_bucket" "tfstate" {
   bucket        = local.state_bucket_name
   force_destroy = var.force_destroy
+
+  lifecycle {
+    prevent_destroy = true
+  }
 
   tags = merge(
     local.common_tags,
@@ -27,10 +66,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tfstate" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.tfstate.arn
     }
+    bucket_key_enabled = true
   }
 }
+
 
 resource "aws_s3_bucket_public_access_block" "tfstate" {
   bucket = aws_s3_bucket.tfstate.id
