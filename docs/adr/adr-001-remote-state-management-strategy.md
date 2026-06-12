@@ -23,9 +23,9 @@ The backend implementation will use:
 - Distinct backend keys for `dev`, `stg`, and `prod`
 
 Environment state will be isolated by backend key:
-- `dev/core/terraform.tfstate`
-- `stg/core/terraform.tfstate`
-- `prod/core/terraform.tfstate`
+- `environments/dev/terraform.tfstate`
+- `environments/stg/terraform.tfstate`
+- `environments/prod/terraform.tfstate`
 
 Credentials will not be hardcoded in backend configuration. AWS credentials will be provided through the standard AWS credential chain.
 

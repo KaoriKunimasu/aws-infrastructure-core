@@ -17,7 +17,7 @@ output "dev_backend_config" {
   description = "Suggested backend configuration for development environment."
   value       = <<-EOT
     bucket = "${aws_s3_bucket.tfstate.bucket}"
-    key    = "dev/core/terraform.tfstate"  
+    key    = "environments/dev/terraform.tfstate"
     region = "${var.aws_region}"
     dynamodb_table = "${aws_dynamodb_table.tfstate_lock.name}"
     encrypt = true
@@ -28,7 +28,7 @@ output "stg_backend_config" {
   description = "Suggested backend configuration for staging environment."
   value       = <<-EOT
     bucket = "${aws_s3_bucket.tfstate.bucket}"
-    key    = "stg/core/terraform.tfstate"  
+    key    = "environments/stg/terraform.tfstate"
     region = "${var.aws_region}"
     dynamodb_table = "${aws_dynamodb_table.tfstate_lock.name}"
     encrypt = true
@@ -39,7 +39,7 @@ output "prod_backend_config" {
   description = "Suggested backend configuration for production environment."
   value       = <<-EOT
     bucket = "${aws_s3_bucket.tfstate.bucket}"
-    key    = "prod/core/terraform.tfstate"  
+    key    = "environments/prod/terraform.tfstate"
     region = "${var.aws_region}"
     dynamodb_table = "${aws_dynamodb_table.tfstate_lock.name}"
     encrypt = true
