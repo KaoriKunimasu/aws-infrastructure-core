@@ -109,3 +109,9 @@ variable "private_subnet_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "enable_ssm_endpoints" {
+  description = "Create interface VPC endpoints (ssm, ssmmessages, ec2messages) so private instances can use SSM without NAT or internet access."
+  type        = bool
+  default     = false
+}
