@@ -27,3 +27,7 @@ tfplan
 # Python
 __pycache__/
 *.pyc
+
+# Local backend config (never commit)
+backend.hcl
+**/backend.hcl
