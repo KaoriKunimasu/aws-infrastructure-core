@@ -17,6 +17,8 @@ module "vpc" {
 
   flow_logs_retention_in_days = 30
 
+  enable_ssm_endpoints = true
+
   tags = local.common_tags
 
   public_subnet_tags = {

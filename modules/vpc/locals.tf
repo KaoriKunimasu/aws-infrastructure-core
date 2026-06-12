@@ -45,4 +45,10 @@ locals {
       name = "${local.name_prefix}-private"
     }
   }
+  ssm_interface_endpoints = [
+    "ssm",
+    "ssmmessages",
+    "ec2messages",
+  ]
+
 }
