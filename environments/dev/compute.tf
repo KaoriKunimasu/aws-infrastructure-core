@@ -69,10 +69,10 @@ resource "aws_iam_instance_profile" "dev_instance" {
 resource "aws_instance" "dev_validation" {
   ami                         = data.aws_ssm_parameter.amazon_linux_2023_ami.value
   instance_type               = var.instance_type
-  subnet_id                   = module.vpc.public_subnet_ids[var.availability_zones[0]]
+  subnet_id                   = module.vpc.private_subnet_ids[var.availability_zones[0]]
   vpc_security_group_ids      = [aws_security_group.dev_instance.id]
   iam_instance_profile        = aws_iam_instance_profile.dev_instance.name
-  associate_public_ip_address = true
+  associate_public_ip_address = false
 
   metadata_options {
     http_endpoint = "enabled"
