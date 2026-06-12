@@ -3,7 +3,7 @@ resource "aws_budgets_budget" "dev_monthly" {
 
   name         = "${local.name_prefix}-monthly-budget"
   budget_type  = "COST"
-  limit_amount = var.monthly_budget_limit
+  limit_amount = tostring(var.monthly_budget_limit)
   limit_unit   = "USD"
   time_unit    = "MONTHLY"
 
@@ -19,7 +19,7 @@ resource "aws_budgets_budget" "dev_monthly" {
     comparison_operator        = "GREATER_THAN"
     threshold                  = 100
     threshold_type             = "PERCENTAGE"
-    notification_type          = "ACTUAL"
+    notification_type          = "FORECASTED"
     subscriber_email_addresses = [var.notification_email]
   }
 }

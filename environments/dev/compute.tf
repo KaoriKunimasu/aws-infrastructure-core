@@ -18,7 +18,7 @@ resource "aws_security_group" "dev_instance" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${local.name_prefix}=instance-sg"
+      Name = "${local.name_prefix}-instance-sg"
     }
   )
 }
