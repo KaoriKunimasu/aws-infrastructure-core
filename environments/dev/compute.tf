@@ -15,11 +15,13 @@ resource "aws_security_group" "dev_instance" {
   )
 }
 
-resource "aws_vpc_security_group_egress_rule" "dev_instance_all_egress" {
+resource "aws_vpc_security_group_egress_rule" "dev_instance_https" {
   security_group_id = aws_security_group.dev_instance.id
   cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1"
-  description       = "Allow all outbound IPv4 traffic"
+  ip_protocol       = "tcp"
+  from_port         = 443
+  to_port           = 443
+  description       = "Allow outbound HTTPS (SSM, package repos)"
 }
 
 
