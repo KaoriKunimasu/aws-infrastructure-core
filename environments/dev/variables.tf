@@ -17,7 +17,7 @@ variable "vpc_cidr" {
 }
 
 variable "availability_zones" {
-  description = "Availability zones used in hte dev environment."
+  description = "Availability zones used in the dev environment."
   type        = list(string)
   default = [
     "ap-southeast-2a",
