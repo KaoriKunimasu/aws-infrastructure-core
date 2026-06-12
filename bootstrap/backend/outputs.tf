@@ -45,3 +45,8 @@ output "prod_backend_config" {
     encrypt = true
     EOT
 }
+
+output "state_kms_key_arn" {
+  description = "The ARN of the KMS key used to encrypt the Terraform state bucket."
+  value       = aws_kms_key.tfstate.arn
+}

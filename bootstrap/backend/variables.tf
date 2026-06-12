@@ -45,3 +45,14 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "kms_key_deletion_window_in_days" {
+  description = "Waiting period before the state bucket KMS key is deleted after scheduling deletion."
+  type        = number
+  default     = 30
+
+  validation {
+    condition     = var.kms_key_deletion_window_in_days >= 7 && var.kms_key_deletion_window_in_days <= 30
+    error_message = "kms_key_deletion_window_in_days must be between 7 and 30."
+  }
+}
