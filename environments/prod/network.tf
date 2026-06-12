@@ -11,5 +11,6 @@ module "vpc" {
   enable_nat_gateway          = var.enable_nat_gateway
   single_nat_gateway          = var.single_nat_gateway
   flow_logs_retention_in_days = var.flow_logs_retention_in_days
+  enable_flow_logs_kms        = true
   tags                        = local.common_tags
 }
