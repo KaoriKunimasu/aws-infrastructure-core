@@ -115,3 +115,20 @@ variable "enable_ssm_endpoints" {
   type        = bool
   default     = false
 }
+
+variable "enable_flow_logs_kms" {
+  description = "Encrypt the VPC Flow Logs CloudWatch log group with a dedicated customer-managed KMS key."
+  type        = bool
+  default     = false
+}
+
+variable "flow_logs_kms_deletion_window_in_days" {
+  description = "Waiting period before the Flow Logs KMS key is deleted after scheduling deletion."
+  type        = number
+  default     = 30
+
+  validation {
+    condition     = var.flow_logs_kms_deletion_window_in_days >= 7 && var.flow_logs_kms_deletion_window_in_days <= 30
+    error_message = "flow_logs_kms_deletion_window_in_days must be between 7 and 30."
+  }
+}

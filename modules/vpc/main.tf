@@ -163,9 +163,76 @@ resource "aws_route_table_association" "private" {
   route_table_id = var.enable_nat_gateway && !var.single_nat_gateway ? aws_route_table.private[each.key].id : aws_route_table.private["shared"].id
 }
 
+data "aws_iam_policy_document" "flow_logs_kms" {
+  count = var.enable_flow_logs_kms ? 1 : 0
+
+  statement {
+    sid    = "EnableRootAccountAdmin"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowCloudWatchLogs"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
+    }
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "ArnLike"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values   = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vpc/${local.name_prefix}/flow-logs"]
+    }
+  }
+}
+
+resource "aws_kms_key" "flow_logs" {
+  count = var.enable_flow_logs_kms ? 1 : 0
+
+  description             = "KMS key for VPC Flow Logs CloudWatch log group (${local.name_prefix})"
+  deletion_window_in_days = var.flow_logs_kms_deletion_window_in_days
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.flow_logs_kms[0].json
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.name_prefix}-flow-logs-key"
+      Type = "vpc-flow-logs-kms"
+    }
+  )
+}
+
+resource "aws_kms_alias" "flow_logs" {
+  count = var.enable_flow_logs_kms ? 1 : 0
+
+  name          = "alias/${local.name_prefix}-flow-logs"
+  target_key_id = aws_kms_key.flow_logs[0].key_id
+}
+
 resource "aws_cloudwatch_log_group" "flow_logs" {
   name              = "/aws/vpc/${local.name_prefix}/flow-logs"
   retention_in_days = var.flow_logs_retention_in_days
+  kms_key_id        = var.enable_flow_logs_kms ? aws_kms_key.flow_logs[0].arn : null
 
   tags = merge(
     local.common_tags,
