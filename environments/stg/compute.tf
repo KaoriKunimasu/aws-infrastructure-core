@@ -27,13 +27,15 @@ resource "aws_security_group" "validation_instance" {
   })
 }
 
-resource "aws_vpc_security_group_egress_rule" "validation_instance_all_egress" {
+resource "aws_vpc_security_group_egress_rule" "validation_instance_https" {
   count = var.create_validation_instances ? 1 : 0
 
   security_group_id = aws_security_group.validation_instance[0].id
+  ip_protocol       = "tcp"
   cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1"
-  description       = "Allow all outbound IPv4 traffic"
+  from_port         = 443
+  to_port           = 443
+  description       = "Allow outbound HTTPS (SSM, package repos)"
 }
 
 resource "aws_iam_role" "validation_instance" {
