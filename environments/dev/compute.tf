@@ -3,17 +3,9 @@ data "aws_ssm_parameter" "amazon_linux_2023_ami" {
 }
 
 resource "aws_security_group" "dev_instance" {
-  name        = local.name
+  name        = "${local.name_prefix}-instance-sg"
   description = "Security group for dev validation instances"
   vpc_id      = module.vpc.vpc_id
-
-  egress {
-    description = "Allow all outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   tags = merge(
     local.common_tags,
@@ -22,6 +14,14 @@ resource "aws_security_group" "dev_instance" {
     }
   )
 }
+
+resource "aws_vpc_security_group_egress_rule" "dev_instance_all_egress" {
+  security_group_id = aws_security_group.dev_instance.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
+  description       = "Allow all outbound IPv4 traffic"
+}
+
 
 data "aws_iam_policy_document" "ec2_assume_role" {
   statement {
