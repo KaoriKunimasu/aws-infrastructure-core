@@ -1,6 +1,6 @@
 output "environment_name" {
   description = "The name of the environment."
-  value       = local.environment
+  value       = var.environment
 }
 
 output "aws_account_id" {

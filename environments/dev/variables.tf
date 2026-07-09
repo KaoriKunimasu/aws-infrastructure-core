@@ -10,6 +10,30 @@ variable "allowed_account_ids" {
   default     = []
 }
 
+variable "project_name" {
+  description = "The name of the project, used for tagging and naming resources."
+  type        = string
+  default     = "core-infrastructure"
+}
+
+variable "environment" {
+  description = "Environment name."
+  type        = string
+  default     = "dev"
+}
+
+variable "cost_center" {
+  description = "Cost center for billing and tagging purposes."
+  type        = string
+  default     = "platform-engineering"
+}
+
+variable "owner" {
+  description = "Owner tag value."
+  type        = string
+  default     = "platform-team"
+}
+
 variable "vpc_cidr" {
   description = "CIDR block assigned to the dev VPC"
   type        = string

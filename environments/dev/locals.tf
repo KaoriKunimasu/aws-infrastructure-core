@@ -1,14 +1,12 @@
 locals {
-  name        = "core"
-  environment = "dev"
-  name_prefix = "${local.name}-${local.environment}"
+  name_prefix = "${var.project_name}-${var.environment}"
 
   common_tags = {
-    Project     = "core-infrastructure"
+    Project     = var.project_name
+    Environment = var.environment
     ManagedBy   = "terraform"
-    CostCenter  = "platform-engineering"
-    Environment = local.environment
-    Repository  = "aws-infrastructure-core"
+    CostCenter  = var.cost_center
+    Owner       = var.owner
   }
 
   notifications_enabled = trimspace(var.notification_email) != ""
