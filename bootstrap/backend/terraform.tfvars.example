@@ -4,6 +4,6 @@ dynamodb_table_name     = "aws-infrastructure-core-tf-locks"
 
 force_destroy   = false
 
-tags ={
-    Owner = "kaori-kunimasu"
+tags = {
+    Owner = "platform-team"
 }

@@ -1,5 +1,5 @@
 aws_region = "ap-southeast-2"
-allowed_account_ids = ["515241425905"]
+allowed_account_ids = ["123456789012"]
 
 project_name = "core-infrastructure"
 environment = "stg"
@@ -15,7 +15,7 @@ enable_nat_gateway = true
 single_nat_gateway          = true
 flow_logs_retention_in_days = 30
 
-create_validation_instance    = true
+create_validation_instances    = true
 validation_instance_type      = "t3.micro"
 validation_root_volume_size   = 16
 validation_private_subnet_index = 0
