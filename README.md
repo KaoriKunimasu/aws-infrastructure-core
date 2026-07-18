@@ -9,7 +9,7 @@ It includes remote state setup, a reusable VPC module, environment-specific root
 
 ## Architecture
 
-This repository manages a small AWS infrastructure baseline with separate dev, stg, and prod environments. Terraform state is stored remotely in S3 with DynamoDB locking, and the shared VPC module is reused across environments.
+Each environment (`dev`, `stg`, `prod`) is its own root module with its own state. Terraform state lives remotely in S3 with DynamoDB locking, and the shared VPC module is reused across all three.
 
 ![Architecture diagram](diagrams/architecture-overview.png)
 
